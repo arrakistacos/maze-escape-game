@@ -5,253 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>⏱️ NEON MAZE ESCAPE 🏃</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            touch-action: none;
-        }
-        
-        body {
-            overflow: hidden;
-            background: #000;
-            font-family: 'Courier New', monospace;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        
-        #canvas-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-        }
-        
-        .ui-layer {
-            position: absolute;
-            z-index: 100;
-            pointer-events: none;
-        }
-        
-        .header {
-            top: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent);
-        }
-        
-        .title {
-            color: #0ff;
-            font-size: 1.3rem;
-            font-weight: 700;
-            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-            letter-spacing: 2px;
-        }
-        
-        .timer {
-            background: #000;
-            border: 2px solid #f0f;
-            color: #f0f;
-            padding: 10px 20px;
-            border-radius: 0;
-            font-size: 1.8rem;
-            font-weight: 800;
-            text-shadow: 0 0 10px #f0f;
-            box-shadow: 0 0 20px #f0f;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .timer.danger {
-            border-color: #f00;
-            color: #f00;
-            text-shadow: 0 0 10px #f00;
-            box-shadow: 0 0 20px #f00;
-            animation: pulse 0.3s ease infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .instructions {
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            color: #0ff;
-            font-size: 1rem;
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #0ff;
-            padding: 10px 20px;
-            box-shadow: 0 0 10px #0ff;
-            letter-spacing: 1px;
-        }
-        
-        .controls {
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            pointer-events: auto;
-        }
-        
-        button {
-            background: #000;
-            border: 2px solid #0ff;
-            color: #0ff;
-            padding: 12px 24px;
-            border-radius: 0;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px #0ff;
-            font-family: 'Courier New', monospace;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        button:hover {
-            background: #0ff;
-            color: #000;
-            box-shadow: 0 0 30px #0ff;
-        }
-        
-        button.danger {
-            border-color: #f0f;
-            color: #f0f;
-            box-shadow: 0 0 10px #f0f;
-        }
-        
-        button.danger:hover {
-            background: #f0f;
-            color: #000;
-        }
-        
-        /* Modal Screens */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-            pointer-events: auto;
-        }
-        
-        .modal.hidden {
-            display: none;
-        }
-        
-        .modal-content {
-            text-align: center;
-            color: #0ff;
-            padding: 40px;
-            max-width: 500px;
-            border: 2px solid #0ff;
-            box-shadow: 0 0 30px #0ff, inset 0 0 30px rgba(0,255,255,0.1);
-            background: rgba(0,20,20,0.9);
-        }
-        
-        .modal h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #0ff;
-            text-shadow: 0 0 20px #0ff;
-            letter-spacing: 5px;
-        }
-        
-        .modal h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-        
-        .modal h2.win {
-            color: #0f0;
-            text-shadow: 0 0 20px #0f0;
-        }
-        
-        .modal h2.lose {
-            color: #f00;
-            text-shadow: 0 0 20px #f00;
-        }
-        
-        .modal p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #0ff;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-        
-        .rules {
-            border: 1px solid #f0f;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-            background: rgba(255,0,255,0.05);
-            box-shadow: 0 0 15px #f0f;
-        }
-        
-        .rules h3 {
-            color: #f0f;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px #f0f;
-            text-align: center;
-        }
-        
-        .rules ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .rules li {
-            padding: 10px 0;
-            padding-left: 30px;
-            position: relative;
-            color: #0ff;
-        }
-        
-        .rules li:before {
-            content: ">";
-            position: absolute;
-            left: 0;
-            color: #f0f;
-            text-shadow: 0 0 10px #f0f;
-        }
-        
-        .scanline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.1) 50%,
-                rgba(0,0,0,0.1)
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 300;
-            opacity: 0.3;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
+        body { overflow: hidden; background: #000; font-family: 'Courier New', monospace; user-select: none; -webkit-user-select: none; }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; }
+        .ui-layer { position: absolute; z-index: 100; pointer-events: none; }
+        .header { top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent); }
+        .title { color: #0ff; font-size: 1.3rem; font-weight: 700; text-shadow: 0 0 10px #0ff; letter-spacing: 2px; }
+        .timer { background: #000; border: 2px solid #f0f; color: #f0f; padding: 10px 20px; border-radius: 0; font-size: 1.8rem; font-weight: 800; text-shadow: 0 0 10px #f0f; box-shadow: 0 0 20px #f0f; font-family: 'Courier New', monospace; }
+        .timer.danger { border-color: #f00; color: #f00; text-shadow: 0 0 10px #f00; box-shadow: 0 0 20px #f00; animation: pulse 0.3s ease infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .instructions { bottom: 100px; left: 50%; transform: translateX(-50%); text-align: center; color: #0ff; font-size: 1rem; background: rgba(0,0,0,0.8); border: 1px solid #0ff; padding: 10px 20px; box-shadow: 0 0 10px #0ff; letter-spacing: 1px; }
+        .controls { bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; pointer-events: auto; }
+        button { background: #000; border: 2px solid #0ff; color: #0ff; padding: 12px 24px; border-radius: 0; cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 0 10px #0ff; font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 2px; }
+        button:hover { background: #0ff; color: #000; box-shadow: 0 0 30px #0ff; }
+        button.danger { border-color: #f0f; color: #f0f; box-shadow: 0 0 10px #f0f; }
+        button.danger:hover { background: #f0f; color: #000; }
+        .difficulty-selector { top: 80px; right: 20px; pointer-events: auto; text-align: right; }
+        .difficulty-label { color: #0ff; font-size: 0.8rem; margin-bottom: 5px; text-shadow: 0 0 5px #0ff; letter-spacing: 1px; }
+        .difficulty-buttons { display: flex; gap: 5px; justify-content: flex-end; }
+        .diff-btn { padding: 6px 12px; font-size: 10px; border-width: 1px; }
+        .diff-btn.active { background: #0ff; color: #000; box-shadow: 0 0 15px #0ff; }
+        .diff-btn.danger.active { background: #f00; border-color: #f00; box-shadow: 0 0 15px #f00; }
+        .diff-btn:hover { transform: none; }
+        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 200; pointer-events: auto; }
+        .modal.hidden { display: none; }
+        .modal-content { text-align: center; color: #0ff; padding: 40px; max-width: 500px; border: 2px solid #0ff; box-shadow: 0 0 30px #0ff, inset 0 0 30px rgba(0,255,255,0.1); background: rgba(0,20,20,0.9); }
+        .modal h1 { font-size: 3rem; margin-bottom: 20px; color: #0ff; text-shadow: 0 0 20px #0ff; letter-spacing: 5px; }
+        .modal h2 { font-size: 2.5rem; margin-bottom: 20px; }
+        .modal h2.win { color: #0f0; text-shadow: 0 0 20px #0f0; }
+        .modal h2.lose { color: #f00; text-shadow: 0 0 20px #f00; }
+        .modal p { font-size: 1.1rem; line-height: 1.6; color: #0ff; margin-bottom: 30px; opacity: 0.9; }
+        .rules { border: 1px solid #f0f; padding: 20px; margin: 20px 0; text-align: left; background: rgba(255,0,255,0.05); box-shadow: 0 0 15px #f0f; }
+        .rules h3 { color: #f0f; margin-bottom: 15px; text-shadow: 0 0 10px #f0f; text-align: center; }
+        .rules ul { list-style: none; padding: 0; }
+        .rules li { padding: 10px 0; padding-left: 30px; position: relative; color: #0ff; }
+        .rules li:before { content: ">"; position: absolute; left: 0; color: #f0f; text-shadow: 0 0 10px #f0f; }
+        .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1)); background-size: 100% 4px; pointer-events: none; z-index: 300; opacity: 0.3; }
     </style>
-    
     <script type="importmap">
     {
         "imports": {
@@ -263,7 +53,6 @@
 </head>
 <body>
     <div class="scanline"></div>
-    
     <div id="canvas-container"></div>
     
     <div class="ui-layer header">
@@ -280,12 +69,19 @@
         <button id="restart-btn" class="danger" onclick="startOver()" style="display: none;">START OVER</button>
     </div>
     
-    <!-- Start Screen -->
+    <div class="ui-layer difficulty-selector">
+        <div class="difficulty-label">DIFFICULTY:</div>
+        <div class="difficulty-buttons">
+            <button class="diff-btn active" data-diff="easy" onclick="setDifficulty('easy')">EASY</button>
+            <button class="diff-btn" data-diff="medium" onclick="setDifficulty('medium')">MEDIUM</button>
+            <button class="diff-btn danger" data-diff="hard" onclick="setDifficulty('hard')">HARD</button>
+        </div>
+    </div>
+    
     <div class="modal" id="start-screen">
         <div class="modal-content">
             <h1>NEON MAZE</h1>
             <p>Escape the maze before time runs out!</p>
-            
             <div class="rules">
                 <h3>HOW TO PLAY</h3>
                 <ul>
@@ -296,12 +92,10 @@
                     <li>Don't hit walls! Don't let go!</li>
                 </ul>
             </div>
-            
             <button onclick="startGame()">START ESCAPE</button>
         </div>
     </div>
     
-    <!-- Win Screen -->
     <div class="modal hidden" id="win-screen">
         <div class="modal-content">
             <h2 class="win">ESCAPED!</h2>
@@ -310,7 +104,6 @@
         </div>
     </div>
     
-    <!-- Lose Screen -->
     <div class="modal hidden" id="lose-screen">
         <div class="modal-content">
             <h2 class="lose" id="lose-title">GAME OVER</h2>
@@ -318,7 +111,7 @@
             <button onclick="startOver()">TRY AGAIN</button>
         </div>
     </div>
-    
+
     <script type="module">
         import * as THREE from 'three';
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -329,60 +122,42 @@
         let gameState = 'waiting';
         let timeLeft = 30;
         let gameTimer = null;
+        let currentDifficulty = 'easy';
         
-        // Maze config
-        const CELL_SIZE = 1.2;
-        const WALL_HEIGHT = 0.8;
-        const MAZE_SIZE = 15;
-        
-        // Neon colors
-        const COLORS = {
-            WALL: 0x00ffff,      // Cyan walls
-            WALL_EMISSIVE: 0x0088ff,
-            START: 0x00ff00,     // Green start
-            END: 0xff0066,       // Pink/red end
-            TRACE: 0xff00ff,     // Magenta trace
-            FLOOR: 0x000011      // Very dark blue
+        // Difficulty config
+        const DIFFICULTY = {
+            easy: { size: 11, time: 30 },
+            medium: { size: 15, time: 25 },
+            hard: { size: 19, time: 20 }
         };
         
-        // Maze grid (1 = wall, 0 = path) - 15x15
-        const mazeGrid = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
-            [1,0,1,0,1,0,1,1,1,0,1,0,1,0,1],
-            [1,0,1,0,0,0,0,0,1,0,0,0,1,0,1],
-            [1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],
-            [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,0,1,1,1,0,1,1,1,1,1],
-            [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
-            [1,0,1,0,1,1,1,0,1,1,1,0,1,0,1],
-            [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
-            [1,0,1,1,1,0,1,1,1,1,1,0,1,0,1],
-            [1,0,0,0,0,0,1,0,0,0,1,0,0,0,1],
-            [1,1,1,0,1,1,1,0,1,0,1,1,1,0,1],
-            [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        ];
+        // Maze config
+        const CELL_SIZE = 1.0;
+        const WALL_HEIGHT = 0.6;
+        let MAZE_SIZE = 11;
+        let mazeGrid = [];
+        let offset = { x: 0, z: 0 };
+        let START_POS = { x: 0, z: 0 };
+        let END_POS = { x: 0, z: 0 };
         
-        // Calculate positions
-        const offset = -(MAZE_SIZE * CELL_SIZE) / 2;
-        const START_POS = { x: offset + CELL_SIZE, z: offset + CELL_SIZE };
-        const END_POS = { x: offset + (MAZE_SIZE - 2) * CELL_SIZE, z: offset + (MAZE_SIZE - 2) * CELL_SIZE };
+        // Colors
+        const COLORS = {
+            WALL: 0x00ffff,
+            START: 0x00ff00,
+            END: 0xff0066,
+            TRACE: 0xff00ff,
+            FLOOR: 0x000011
+        };
         
-        // Three.js Setup
+        // Scene setup
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(COLORS.FLOOR);
         
-        // Orthographic camera for true 2D view - ZOOMED OUT MORE
         const aspect = window.innerWidth / window.innerHeight;
-        const viewSize = 32;  // Increased from 22 to zoom out more
+        const viewSize = 36; // Zoomed out to fit larger mazes
         const camera = new THREE.OrthographicCamera(
-            viewSize * aspect / -2,
-            viewSize * aspect / 2,
-            viewSize / 2,
-            viewSize / -2,
-            0.1,
-            1000
+            viewSize * aspect / -2, viewSize * aspect / 2,
+            viewSize / 2, viewSize / -2, 0.1, 1000
         );
         camera.position.set(0, 10, 0);
         camera.lookAt(0, 0, 0);
@@ -392,119 +167,58 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         document.getElementById('canvas-container').appendChild(renderer.domElement);
         
-        // Post-processing for neon glow
+        // Post-processing
         const composer = new EffectComposer(renderer);
         const renderPass = new RenderPass(scene, camera);
         composer.addPass(renderPass);
-        
         const bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(window.innerWidth, window.innerHeight),
-            1.5,    // strength
-            0.4,    // radius
-            0.85    // threshold
+            new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85
         );
         composer.addPass(bloomPass);
         
-        // Build maze
-        const walls = [];
-        const wallMaterial = new THREE.MeshBasicMaterial({
-            color: COLORS.WALL,
-        });
+        // Groups
+        const mazeGroup = new THREE.Group();
+        scene.add(mazeGroup);
         
-        // Create walls as glowing lines (neon effect)
-        for (let z = 0; z < MAZE_SIZE; z++) {
-            for (let x = 0; x < MAZE_SIZE; x++) {
-                if (mazeGrid[z][x] === 1) {
-                    const wx = offset + x * CELL_SIZE;
-                    const wz = offset + z * CELL_SIZE;
-                    
-                    // Wall cube with glow
-                    const geometry = new THREE.BoxGeometry(CELL_SIZE * 0.95, WALL_HEIGHT, CELL_SIZE * 0.95);
-                    const wall = new THREE.Mesh(geometry, wallMaterial);
-                    wall.position.set(wx, WALL_HEIGHT / 2, wz);
-                    scene.add(wall);
-                    walls.push({x: wx, z: wz, mesh: wall});
-                    
-                    // Glowing wireframe overlay
-                    const edges = new THREE.EdgesGeometry(geometry);
-                    const lineMaterial = new THREE.LineBasicMaterial({ 
-                        color: 0xffffff,
-                        linewidth: 2
-                    });
-                    const wireframe = new THREE.LineSegments(edges, lineMaterial);
-                    wall.add(wireframe);
-                }
-            }
-        }
-        
-        // Floor grid
-        const gridHelper = new THREE.GridHelper(MAZE_SIZE * CELL_SIZE, MAZE_SIZE, 0x004444, 0x002222);
-        gridHelper.position.y = 0.01;
-        scene.add(gridHelper);
-        
-        // START marker - glowing green
-        const startGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32);
-        const startMat = new THREE.MeshBasicMaterial({ 
-            color: COLORS.START,
-        });
-        const startMarker = new THREE.Mesh(startGeo, startMat);
-        startMarker.position.set(START_POS.x, 0.05, START_POS.z);
-        scene.add(startMarker);
-        
-        // Start glow ring
-        const startRingGeo = new THREE.RingGeometry(0.5, 0.7, 32);
-        const startRingMat = new THREE.MeshBasicMaterial({ 
-            color: COLORS.START,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.8
-        });
-        const startRing = new THREE.Mesh(startRingGeo, startRingMat);
-        startRing.position.set(START_POS.x, 0.1, START_POS.z);
+        // Markers
+        const startRing = new THREE.Mesh(
+            new THREE.RingGeometry(0.5, 0.7, 32),
+            new THREE.MeshBasicMaterial({ color: COLORS.START, side: THREE.DoubleSide, transparent: true, opacity: 0.8 })
+        );
         startRing.rotation.x = -Math.PI / 2;
         scene.add(startRing);
         
-        // END marker - glowing red/pink
-        const endGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32);
-        const endMat = new THREE.MeshBasicMaterial({ 
-            color: COLORS.END,
-        });
-        const endMarker = new THREE.Mesh(endGeo, endMat);
-        endMarker.position.set(END_POS.x, 0.05, END_POS.z);
-        scene.add(endMarker);
+        const startMarker = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32),
+            new THREE.MeshBasicMaterial({ color: COLORS.START })
+        );
+        scene.add(startMarker);
         
-        // End glow ring
-        const endRingGeo = new THREE.RingGeometry(0.5, 0.7, 32);
-        const endRingMat = new THREE.MeshBasicMaterial({ 
-            color: COLORS.END,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.8
-        });
-        const endRing = new THREE.Mesh(endRingGeo, endRingMat);
-        endRing.position.set(END_POS.x, 0.1, END_POS.z);
+        const endRing = new THREE.Mesh(
+            new THREE.RingGeometry(0.5, 0.7, 32),
+            new THREE.MeshBasicMaterial({ color: COLORS.END, side: THREE.DoubleSide, transparent: true, opacity: 0.8 })
+        );
         endRing.rotation.x = -Math.PI / 2;
         scene.add(endRing);
         
-        // Player trace line
-        let traceLine = null;
-        let tracePoints = [];
+        const endMarker = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32),
+            new THREE.MeshBasicMaterial({ color: COLORS.END })
+        );
+        scene.add(endMarker);
         
-        function createTraceLine() {
-            const geometry = new THREE.BufferGeometry();
-            const material = new THREE.LineBasicMaterial({ 
-                color: COLORS.TRACE,
-                linewidth: 5
-            });
-            traceLine = new THREE.Line(geometry, material);
-            scene.add(traceLine);
-        }
-        createTraceLine();
+        // Trace line
+        const traceLine = new THREE.Line(
+            new THREE.BufferGeometry(),
+            new THREE.LineBasicMaterial({ color: COLORS.TRACE, linewidth: 5 })
+        );
+        scene.add(traceLine);
         
         // Player dot
-        const playerGeo = new THREE.SphereGeometry(0.15, 16, 16);
-        const playerMat = new THREE.MeshBasicMaterial({ color: COLORS.TRACE });
-        const playerDot = new THREE.Mesh(playerGeo, playerMat);
+        const playerDot = new THREE.Mesh(
+            new THREE.SphereGeometry(0.15, 16, 16),
+            new THREE.MeshBasicMaterial({ color: COLORS.TRACE })
+        );
         playerDot.visible = false;
         scene.add(playerDot);
         
@@ -512,27 +226,106 @@
         const raycaster = new THREE.Raycaster();
         const touchPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
         
-        // Game variables
         let isTracing = false;
+        let tracePoints = [];
+        let walls = [];
         
-        // Animation - pulse rings
+        // Maze generation
+        function generateMaze(size) {
+            const grid = [];
+            for (let y = 0; y < size; y++) {
+                grid[y] = [];
+                for (let x = 0; x < size; x++) grid[y][x] = 1;
+            }
+            
+            function carve(x, y) {
+                grid[y][x] = 0;
+                const dirs = [[0,-2],[2,0],[0,2],[-2,0]].sort(() => Math.random() - 0.5);
+                for (const [dx, dy] of dirs) {
+                    const nx = x + dx, ny = y + dy;
+                    if (nx > 0 && nx < size - 1 && ny > 0 && ny < size - 1 && grid[ny][nx] === 1) {
+                        grid[y + dy/2][x + dx/2] = 0;
+                        carve(nx, ny);
+                    }
+                }
+            }
+            
+            carve(1, 1);
+            grid[1][1] = 0;
+            grid[size-2][size-2] = 0;
+            return grid;
+        }
+        
+        // Build maze
+        function buildMaze() {
+            // Clear old
+            while (mazeGroup.children.length) mazeGroup.remove(mazeGroup.children[0]);
+            walls = [];
+            
+            // Get config
+            const config = DIFFICULTY[currentDifficulty];
+            MAZE_SIZE = config.size;
+            timeLeft = config.time;
+            document.getElementById('timer').textContent = timeLeft.toFixed(2);
+            
+            // Generate
+            mazeGrid = generateMaze(MAZE_SIZE);
+            
+            // Calculate positions
+            const off = -(MAZE_SIZE * CELL_SIZE) / 2;
+            offset = { x: off, z: off };
+            START_POS = { x: off + CELL_SIZE, z: off + CELL_SIZE };
+            END_POS = { x: off + (MAZE_SIZE - 2) * CELL_SIZE, z: off + (MAZE_SIZE - 2) * CELL_SIZE };
+            
+            // Build walls
+            const wallMat = new THREE.MeshBasicMaterial({ color: COLORS.WALL });
+            for (let z = 0; z < MAZE_SIZE; z++) {
+                for (let x = 0; x < MAZE_SIZE; x++) {
+                    if (mazeGrid[z][x] === 1) {
+                        const wx = off + x * CELL_SIZE;
+                        const wz = off + z * CELL_SIZE;
+                        const geo = new THREE.BoxGeometry(CELL_SIZE * 0.95, WALL_HEIGHT, CELL_SIZE * 0.95);
+                        const wall = new THREE.Mesh(geo, wallMat);
+                        wall.position.set(wx, WALL_HEIGHT / 2, wz);
+                        mazeGroup.add(wall);
+                        walls.push({ x: wx, z: wz });
+                        
+                        // Wireframe
+                        const edges = new THREE.EdgesGeometry(geo);
+                        const wire = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+                        wall.add(wire);
+                    }
+                }
+            }
+            
+            // Grid
+            const grid = new THREE.GridHelper(MAZE_SIZE * CELL_SIZE, MAZE_SIZE, 0x004444, 0x002222);
+            grid.position.y = 0.01;
+            mazeGroup.add(grid);
+            
+            // Update markers
+            startMarker.position.set(START_POS.x, 0.05, START_POS.z);
+            startRing.position.set(START_POS.x, 0.1, START_POS.z);
+            endMarker.position.set(END_POS.x, 0.05, END_POS.z);
+            endRing.position.set(END_POS.x, 0.1, END_POS.z);
+        }
+        
+        // Initial build
+        buildMaze();
+        
+        // Animation
         function animate() {
             requestAnimationFrame(animate);
-            
             const time = Date.now() * 0.003;
             startRing.scale.setScalar(1 + Math.sin(time) * 0.2);
             endRing.scale.setScalar(1 + Math.sin(time + Math.PI) * 0.2);
-            
             composer.render();
         }
         animate();
         
-        // Touch handling
-        function getTouchPos(clientX, clientY) {
-            const mouse = new THREE.Vector2(
-                (clientX / window.innerWidth) * 2 - 1,
-                -(clientY / window.innerHeight) * 2 + 1
-            );
+        // Input handling
+        function getTouchPos(cx, cy) {
+            const mouse = new THREE.Vector2((cx / window.innerWidth) * 2 - 1, -(cy / window.innerHeight) * 2 + 1);
             raycaster.setFromCamera(mouse, camera);
             const target = new THREE.Vector3();
             raycaster.ray.intersectPlane(touchPlane, target);
@@ -540,52 +333,37 @@
         }
         
         function checkAtStart(x, z) {
-            const dx = x - START_POS.x;
-            const dz = z - START_POS.z;
+            const dx = x - START_POS.x, dz = z - START_POS.z;
             return Math.sqrt(dx*dx + dz*dz) < 0.8;
         }
         
         function checkAtEnd(x, z) {
-            const dx = x - END_POS.x;
-            const dz = z - END_POS.z;
+            const dx = x - END_POS.x, dz = z - END_POS.z;
             return Math.sqrt(dx*dx + dz*dz) < 0.6;
         }
         
         function isInWall(x, z) {
-            const gx = Math.floor((x - offset) / CELL_SIZE);
-            const gz = Math.floor((z - offset) / CELL_SIZE);
-            
-            if (gx < 0 || gx >= MAZE_SIZE || gz < 0 || gz >= MAZE_SIZE) return true;
-            
-            // Check collision with walls more precisely
-            for (const wall of walls) {
-                const dx = x - wall.x;
-                const dz = z - wall.z;
-                const dist = Math.sqrt(dx*dx + dz*dz);
-                if (dist < CELL_SIZE * 0.4) return true;
+            for (const w of walls) {
+                const dx = x - w.x, dz = z - w.z;
+                if (Math.sqrt(dx*dx + dz*dz) < CELL_SIZE * 0.4) return true;
             }
-            
             return false;
         }
         
         function updateTrace() {
             if (tracePoints.length > 1) {
-                const geometry = new THREE.BufferGeometry().setFromPoints(tracePoints);
                 traceLine.geometry.dispose();
-                traceLine.geometry = geometry;
+                traceLine.geometry = new THREE.BufferGeometry().setFromPoints(tracePoints);
             }
         }
         
-        // Event listeners
+        // Touch events
         const canvas = renderer.domElement;
-        
-        function onStart(e) {
+        canvas.addEventListener('touchstart', (e) => {
             if (gameState !== 'playing') return;
             e.preventDefault();
-            
-            const touch = e.touches ? e.touches[0] : e;
+            const touch = e.touches[0];
             const pos = getTouchPos(touch.clientX, touch.clientY);
-            
             if (pos && checkAtStart(pos.x, pos.z)) {
                 isTracing = true;
                 tracePoints = [new THREE.Vector3(pos.x, 0.1, pos.z)];
@@ -593,55 +371,73 @@
                 playerDot.position.set(pos.x, 0.1, pos.z);
                 playerDot.visible = true;
             }
-        }
+        }, { passive: false });
         
-        function onMove(e) {
+        canvas.addEventListener('touchmove', (e) => {
             if (gameState !== 'playing' || !isTracing) return;
             e.preventDefault();
-            
-            const touch = e.touches ? e.touches[0] : e;
+            const touch = e.touches[0];
             const pos = getTouchPos(touch.clientX, touch.clientY);
-            
             if (pos) {
-                if (isInWall(pos.x, pos.z)) {
-                    loseGame('wall');
-                    return;
-                }
-                
+                if (isInWall(pos.x, pos.z)) { loseGame('wall'); return; }
                 tracePoints.push(new THREE.Vector3(pos.x, 0.1, pos.z));
                 updateTrace();
                 playerDot.position.set(pos.x, 0.1, pos.z);
-                
-                if (checkAtEnd(pos.x, pos.z)) {
-                    winGame();
-                }
+                if (checkAtEnd(pos.x, pos.z)) winGame();
             }
-        }
+        }, { passive: false });
         
-        function onEnd(e) {
+        canvas.addEventListener('touchend', (e) => {
             if (gameState !== 'playing') return;
             e.preventDefault();
-            
             if (isTracing) {
                 const last = tracePoints[tracePoints.length - 1];
-                if (!checkAtEnd(last.x, last.z)) {
-                    loseGame('letgo');
-                }
+                if (!checkAtEnd(last.x, last.z)) loseGame('letgo');
             }
             isTracing = false;
-        }
+        }, { passive: false });
         
-        canvas.addEventListener('touchstart', onStart, { passive: false });
-        canvas.addEventListener('touchmove', onMove, { passive: false });
-        canvas.addEventListener('touchend', onEnd, { passive: false });
-        canvas.addEventListener('mousedown', (e) => onStart({ touches: [e], preventDefault: ()=>{} }));
-        canvas.addEventListener('mousemove', (e) => { if (e.buttons) onMove({ touches: [e], preventDefault: ()=>{} }); });
-        canvas.addEventListener('mouseup', onEnd);
+        canvas.addEventListener('mousedown', (e) => {
+            const pos = getTouchPos(e.clientX, e.clientY);
+            if (pos && gameState === 'playing' && checkAtStart(pos.x, pos.z)) {
+                isTracing = true;
+                tracePoints = [new THREE.Vector3(pos.x, 0.1, pos.z)];
+                updateTrace();
+                playerDot.position.set(pos.x, 0.1, pos.z);
+                playerDot.visible = true;
+            }
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (!e.buttons || gameState !== 'playing' || !isTracing) return;
+            const pos = getTouchPos(e.clientX, e.clientY);
+            if (pos) {
+                if (isInWall(pos.x, pos.z)) { loseGame('wall'); return; }
+                tracePoints.push(new THREE.Vector3(pos.x, 0.1, pos.z));
+                updateTrace();
+                playerDot.position.set(pos.x, 0.1, pos.z);
+                if (checkAtEnd(pos.x, pos.z)) winGame();
+            }
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            if (gameState !== 'playing') return;
+            if (isTracing) {
+                const last = tracePoints[tracePoints.length - 1];
+                if (!checkAtEnd(last.x, last.z)) loseGame('letgo');
+            }
+            isTracing = false;
+        });
         
         // Game functions
+        window.setDifficulty = function(diff) {
+            currentDifficulty = diff;
+            document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.diff === diff));
+            if (gameState === 'waiting') buildMaze();
+        };
+        
         window.startGame = function() {
             gameState = 'playing';
-            timeLeft = 30;
             tracePoints = [];
             updateTrace();
             playerDot.visible = false;
@@ -650,56 +446,41 @@
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('win-screen').classList.add('hidden');
             document.getElementById('lose-screen').classList.add('hidden');
-            
             document.getElementById('start-btn').style.display = 'none';
             document.getElementById('restart-btn').style.display = 'inline-block';
             
-            startTimer();
+            clearInterval(gameTimer);
+            gameTimer = setInterval(() => {
+                timeLeft -= 0.1;
+                document.getElementById('timer').textContent = timeLeft.toFixed(2);
+                document.getElementById('timer').classList.toggle('danger', timeLeft <= 5);
+                if (timeLeft <= 0) { timeLeft = 0; loseGame('timeout'); }
+            }, 100);
         };
         
         window.startOver = function() {
             clearInterval(gameTimer);
             gameState = 'waiting';
-            timeLeft = 30;
+            isTracing = false;
+            playerDot.visible = false;
             tracePoints = [];
             updateTrace();
-            playerDot.visible = false;
-            isTracing = false;
             
-            updateTimerDisplay();
+            // Generate new maze!
+            buildMaze();
             
             document.getElementById('start-screen').classList.remove('hidden');
             document.getElementById('win-screen').classList.add('hidden');
             document.getElementById('lose-screen').classList.add('hidden');
-            
             document.getElementById('start-btn').style.display = 'inline-block';
             document.getElementById('restart-btn').style.display = 'none';
         };
         
-        function startTimer() {
-            gameTimer = setInterval(() => {
-                timeLeft -= 0.1;
-                updateTimerDisplay();
-                
-                if (timeLeft <= 0) {
-                    timeLeft = 0;
-                    loseGame('timeout');
-                }
-            }, 100);
-        }
-        
-        function updateTimerDisplay() {
-            const timer = document.getElementById('timer');
-            timer.textContent = timeLeft.toFixed(2);
-            timer.classList.toggle('danger', timeLeft <= 5);
-        }
-        
         function winGame() {
             gameState = 'won';
             clearInterval(gameTimer);
-            
-            const time = (30 - timeLeft).toFixed(2);
-            document.getElementById('win-message').textContent = `Escaped in ${time}s!`;
+            const used = (DIFFICULTY[currentDifficulty].time - timeLeft).toFixed(2);
+            document.getElementById('win-message').textContent = `Escaped in ${used}s!`;
             document.getElementById('win-screen').classList.remove('hidden');
         }
         
@@ -707,35 +488,22 @@
             gameState = 'lost';
             clearInterval(gameTimer);
             isTracing = false;
-            
             const title = document.getElementById('lose-title');
             const msg = document.getElementById('lose-message');
-            
-            if (reason === 'wall') {
-                title.textContent = 'WALL HIT!';
-                msg.textContent = 'Stay on the path!';
-            } else if (reason === 'letgo') {
-                title.textContent = 'STOPPED!';
-                msg.textContent = 'Keep tracing to the end!';
-            } else {
-                title.textContent = 'TIME OUT!';
-                msg.textContent = 'Too slow!';
-            }
-            
+            if (reason === 'wall') { title.textContent = 'WALL HIT!'; msg.textContent = 'Stay on the path!'; }
+            else if (reason === 'letgo') { title.textContent = 'STOPPED!'; msg.textContent = 'Keep tracing!'; }
+            else { title.textContent = 'TIME OUT!'; msg.textContent = 'Too slow!'; }
             document.getElementById('lose-screen').classList.remove('hidden');
         }
         
-        // Resize
         window.addEventListener('resize', () => {
             const aspect = window.innerWidth / window.innerHeight;
-            camera.left = 32 * aspect / -2;  // Updated to match new viewSize
-            camera.right = 32 * aspect / 2;
+            camera.left = 36 * aspect / -2;
+            camera.right = 36 * aspect / 2;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             composer.setSize(window.innerWidth, window.innerHeight);
         });
-        
-        updateTimerDisplay();
     </script>
 </body>
 </html>
