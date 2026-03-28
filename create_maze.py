@@ -156,10 +156,10 @@ def find_solution_path(maze, size):
 def create_maze_scene():
     """Create the complete maze scene."""
     
-    # Materials
-    wall_mat = create_material("WallMat", (0.3, 0.25, 0.35, 1.0), roughness=0.9)  # Dark purple-gray
-    floor_mat = create_material("FloorMat", (0.15, 0.15, 0.2, 1.0), roughness=0.95)  # Dark floor
-    path_mat = create_material("PathMat", (0.25, 0.25, 0.3, 1.0), roughness=0.8)  # Slightly lighter path
+    # Materials - bright contrasting colors for visibility
+    wall_mat = create_material("WallMat", (0.9, 0.5, 0.2, 1.0), roughness=0.8)  # Bright orange walls
+    floor_mat = create_material("FloorMat", (0.2, 0.2, 0.25, 1.0), roughness=0.95)  # Dark floor
+    path_mat = create_material("PathMat", (0.35, 0.35, 0.4, 1.0), roughness=0.8)  # Slightly lighter path
     start_mat = create_material("StartMat", (0.2, 0.9, 0.3, 1.0), emission=2.0)  # Glowing green
     end_mat = create_material("EndMat", (0.9, 0.2, 0.2, 1.0), emission=2.0)  # Glowing red
     gem_mat = create_material("GemMat", (1.0, 0.8, 0.2, 1.0), roughness=0.1, metallic=0.8, emission=0.5)  # Gold gem

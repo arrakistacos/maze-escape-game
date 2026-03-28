@@ -327,9 +327,9 @@
         // Three.js Setup
         const scene = new THREE.Scene();
         
-        // Orthographic camera for 2D top-down view
+        // Orthographic camera for 2D top-down view - ZOOMED OUT
         const aspect = window.innerWidth / window.innerHeight;
-        const frustumSize = 20;
+        const frustumSize = 26;  // Increased from 20 to zoom out
         const camera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2,
             frustumSize * aspect / 2,
