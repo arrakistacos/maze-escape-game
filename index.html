@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>⏱️ 30-Second Maze Escape 🏃</title>
+    <title>⏱️ NEON MAZE ESCAPE 🏃</title>
     <style>
         * {
             margin: 0;
@@ -14,8 +14,8 @@
         
         body {
             overflow: hidden;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            font-family: 'Courier New', monospace;
             user-select: none;
             -webkit-user-select: none;
         }
@@ -42,35 +42,41 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.7), transparent);
+            background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent);
         }
         
         .title {
-            color: #fff;
-            font-size: 1.2rem;
+            color: #0ff;
+            font-size: 1.3rem;
             font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            letter-spacing: 2px;
         }
         
         .timer {
-            background: linear-gradient(135deg, #ff4757, #ff6b81);
-            color: white;
+            background: #000;
+            border: 2px solid #f0f;
+            color: #f0f;
             padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 1.5rem;
+            border-radius: 0;
+            font-size: 1.8rem;
             font-weight: 800;
-            box-shadow: 0 4px 15px rgba(255,71,87,0.4);
-            transition: all 0.3s ease;
+            text-shadow: 0 0 10px #f0f;
+            box-shadow: 0 0 20px #f0f;
+            font-family: 'Courier New', monospace;
         }
         
         .timer.danger {
-            background: linear-gradient(135deg, #ff3838, #ff0000);
-            animation: pulse 0.5s ease infinite;
+            border-color: #f00;
+            color: #f00;
+            text-shadow: 0 0 10px #f00;
+            box-shadow: 0 0 20px #f00;
+            animation: pulse 0.3s ease infinite;
         }
         
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
         }
         
         .instructions {
@@ -78,11 +84,13 @@
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.9rem;
-            background: rgba(0,0,0,0.5);
+            color: #0ff;
+            font-size: 1rem;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #0ff;
             padding: 10px 20px;
-            border-radius: 20px;
+            box-shadow: 0 0 10px #0ff;
+            letter-spacing: 1px;
         }
         
         .controls {
@@ -90,39 +98,41 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 10px;
+            gap: 15px;
             pointer-events: auto;
         }
         
         button {
-            background: linear-gradient(135deg, #3742fa, #2f3542);
-            border: none;
-            color: white;
+            background: #000;
+            border: 2px solid #0ff;
+            color: #0ff;
             padding: 12px 24px;
-            border-radius: 25px;
+            border-radius: 0;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(55,66,250,0.3);
+            box-shadow: 0 0 10px #0ff;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(55,66,250,0.4);
+            background: #0ff;
+            color: #000;
+            box-shadow: 0 0 30px #0ff;
         }
         
-        button:active {
-            transform: translateY(0);
+        button.danger {
+            border-color: #f0f;
+            color: #f0f;
+            box-shadow: 0 0 10px #f0f;
         }
         
-        button.primary {
-            background: linear-gradient(135deg, #2ed573, #26de81);
-            box-shadow: 0 4px 15px rgba(46,213,115,0.4);
-        }
-        
-        button.primary:hover {
-            box-shadow: 0 6px 20px rgba(46,213,115,0.5);
+        button.danger:hover {
+            background: #f0f;
+            color: #000;
         }
         
         /* Modal Screens */
@@ -132,14 +142,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 200;
             pointer-events: auto;
-            backdrop-filter: blur(10px);
         }
         
         .modal.hidden {
@@ -148,18 +157,20 @@
         
         .modal-content {
             text-align: center;
-            color: white;
+            color: #0ff;
             padding: 40px;
             max-width: 500px;
+            border: 2px solid #0ff;
+            box-shadow: 0 0 30px #0ff, inset 0 0 30px rgba(0,255,255,0.1);
+            background: rgba(0,20,20,0.9);
         }
         
         .modal h1 {
             font-size: 3rem;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, #ff6b6b, #feca57);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #0ff;
+            text-shadow: 0 0 20px #0ff;
+            letter-spacing: 5px;
         }
         
         .modal h2 {
@@ -168,37 +179,37 @@
         }
         
         .modal h2.win {
-            background: linear-gradient(135deg, #2ed573, #26de81);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #0f0;
+            text-shadow: 0 0 20px #0f0;
         }
         
         .modal h2.lose {
-            background: linear-gradient(135deg, #ff4757, #ff3838);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #f00;
+            text-shadow: 0 0 20px #f00;
         }
         
         .modal p {
             font-size: 1.1rem;
             line-height: 1.6;
-            color: rgba(255,255,255,0.8);
+            color: #0ff;
             margin-bottom: 30px;
+            opacity: 0.9;
         }
         
         .rules {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
+            border: 1px solid #f0f;
             padding: 20px;
             margin: 20px 0;
             text-align: left;
+            background: rgba(255,0,255,0.05);
+            box-shadow: 0 0 15px #f0f;
         }
         
         .rules h3 {
-            color: #feca57;
+            color: #f0f;
             margin-bottom: 15px;
+            text-shadow: 0 0 10px #f0f;
+            text-align: center;
         }
         
         .rules ul {
@@ -207,44 +218,40 @@
         }
         
         .rules li {
-            padding: 8px 0;
-            padding-left: 25px;
+            padding: 10px 0;
+            padding-left: 30px;
             position: relative;
+            color: #0ff;
         }
         
         .rules li:before {
-            content: "➤";
+            content: ">";
             position: absolute;
             left: 0;
-            color: #2ed573;
+            color: #f0f;
+            text-shadow: 0 0 10px #f0f;
         }
         
-        .path-indicator {
-            position: absolute;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(46, 213, 115, 0.2);
-            border: 2px solid #2ed573;
-            color: #2ed573;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .trace-line {
-            position: absolute;
-            height: 4px;
-            background: linear-gradient(90deg, #2ed573, #26de81);
-            border-radius: 2px;
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
             pointer-events: none;
-            z-index: 50;
-            box-shadow: 0 0 10px rgba(46,213,115,0.5);
+            z-index: 300;
+            opacity: 0.3;
         }
     </style>
     
-    <!-- Three.js CDN -->
     <script type="importmap">
     {
         "imports": {
@@ -255,133 +262,90 @@
     </script>
 </head>
 <body>
-    <!-- Canvas Container -->
+    <div class="scanline"></div>
+    
     <div id="canvas-container"></div>
     
-    <!-- UI Layer -->
     <div class="ui-layer header">
-        <div class="title">🏃 MAZE ESCAPE</div>
+        <div class="title">NEON MAZE</div>
         <div class="timer" id="timer">30.00</div>
     </div>
     
     <div class="ui-layer instructions" id="instructions">
-        🟢 START (bottom-left) → 🔴 END (top-right) — Trace the path!
+        🟢 START → 🔴 END | TRACE THE PATH!
     </div>
     
     <div class="ui-layer controls">
-        <button id="start-btn" onclick="startGame()">🎮 START GAME</button>
-        <button id="restart-btn" onclick="startOver()" style="display: none;">🔄 START OVER</button>
-        <button onclick="resetView()">📷 Reset View</button>
+        <button id="start-btn" onclick="startGame()">START GAME</button>
+        <button id="restart-btn" class="danger" onclick="startOver()" style="display: none;">START OVER</button>
     </div>
     
     <!-- Start Screen -->
     <div class="modal" id="start-screen">
         <div class="modal-content">
-            <h1>🏃 MAZE ESCAPE</h1>
-            <p>Can you trace the path and escape before time runs out?</p>
+            <h1>NEON MAZE</h1>
+            <p>Escape the maze before time runs out!</p>
             
             <div class="rules">
-                <h3>🎮 How to Play:</h3>
+                <h3>HOW TO PLAY</h3>
                 <ul>
-                    <li>Find the <strong>🟢 START</strong> (bottom-left green)</li>
-                    <li>Find the <strong>🔴 END</strong> (top-right red)</li>
-                    <li>Touch <strong>START</strong> to begin the 30-second timer</li>
-                    <li>Drag your finger to trace the path to <strong>END</strong></li>
-                    <li>Don't touch walls or let go!</li>
+                    <li>Find the GREEN START (bottom-left)</li>
+                    <li>Find the RED END (top-right)</li>
+                    <li>Touch START to begin timer</li>
+                    <li>Drag to trace path to END</li>
+                    <li>Don't hit walls! Don't let go!</li>
                 </ul>
             </div>
             
-            <button class="primary" onclick="startGame()">🚀 START ESCAPE</button>
-            <button onclick="startOver()" style="margin-top: 10px; background: transparent; border: 2px solid rgba(255,255,255,0.3);">🔄 START OVER</button>
+            <button onclick="startGame()">START ESCAPE</button>
         </div>
     </div>
     
     <!-- Win Screen -->
     <div class="modal hidden" id="win-screen">
         <div class="modal-content">
-            <h2 class="win">🎉 ESCAPED!</h2>
-            <p id="win-message">You made it out in time!</p>
-            <button class="primary" onclick="startOver()">🔄 PLAY AGAIN</button>
+            <h2 class="win">ESCAPED!</h2>
+            <p id="win-message">You made it!</p>
+            <button onclick="startOver()">PLAY AGAIN</button>
         </div>
     </div>
     
     <!-- Lose Screen -->
     <div class="modal hidden" id="lose-screen">
         <div class="modal-content">
-            <h2 class="lose" id="lose-title">⏰ TIME'S UP!</h2>
-            <p id="lose-message">The maze has trapped you forever...</p>
-            <button class="primary" onclick="startOver()">🔄 TRY AGAIN</button>
+            <h2 class="lose" id="lose-title">GAME OVER</h2>
+            <p id="lose-message">Try again...</p>
+            <button onclick="startOver()">TRY AGAIN</button>
         </div>
     </div>
     
     <script type="module">
         import * as THREE from 'three';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         
         // Game State
-        let gameState = 'waiting'; // waiting, playing, won, lost
+        let gameState = 'waiting';
         let timeLeft = 30;
         let gameTimer = null;
-        let animationId = null;
         
-        // Three.js Setup
-        const scene = new THREE.Scene();
-        
-        // Orthographic camera for 2D top-down view - ZOOMED OUT
-        const aspect = window.innerWidth / window.innerHeight;
-        const frustumSize = 26;  // Increased from 20 to zoom out
-        const camera = new THREE.OrthographicCamera(
-            frustumSize * aspect / -2,
-            frustumSize * aspect / 2,
-            frustumSize / 2,
-            frustumSize / -2,
-            0.1,
-            1000
-        );
-        camera.position.set(0, 10, 0);
-        camera.lookAt(0, 0, 0);
-        camera.rotation.z = 0; // Keep upright
-        
-        const renderer = new THREE.WebGLRenderer({ 
-            antialias: true, 
-            alpha: false,
-            powerPreference: "high-performance"
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = false; // Disable shadows for cleaner 2D look
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-        
-        // Dimmed Lighting for 2D view
-        const ambientLight = new THREE.AmbientLight(0x404060, 0.4);
-        scene.add(ambientLight);
-        
-        // Brighter directional light from above
-        const dirLight = new THREE.DirectionalLight(0x707090, 0.8);
-        dirLight.position.set(0, 10, 5);
-        scene.add(dirLight);
-        
-        // Add a subtle spotlight to illuminate the center
-        const spotLight = new THREE.SpotLight(0x505070, 1.0);
-        spotLight.position.set(0, 10, 0);
-        spotLight.angle = Math.PI / 3;
-        spotLight.penumbra = 0.5;
-        spotLight.decay = 0;
-        spotLight.distance = 50;
-        spotLight.target.position.set(0, 0, 0);
-        scene.add(spotLight);
-        scene.add(spotLight.target);
-        
-        // Maze boundaries (for collision detection)
+        // Maze config
+        const CELL_SIZE = 1.2;
+        const WALL_HEIGHT = 0.8;
         const MAZE_SIZE = 15;
-        const CELL_SIZE = 1.0;
-        const WALL_RADIUS = CELL_SIZE * 0.45;
-        const START_POS = { x: -6.5, z: -6.5 };
-        const END_POS = { x: 5.5, z: 5.5 };
-        const END_RADIUS = 0.5;
         
-        // Maze grid (1 = wall, 0 = path)
-        // This should match the Blender maze generation
+        // Neon colors
+        const COLORS = {
+            WALL: 0x00ffff,      // Cyan walls
+            WALL_EMISSIVE: 0x0088ff,
+            START: 0x00ff00,     // Green start
+            END: 0xff0066,       // Pink/red end
+            TRACE: 0xff00ff,     // Magenta trace
+            FLOOR: 0x000011      // Very dark blue
+        };
+        
+        // Maze grid (1 = wall, 0 = path) - 15x15
         const mazeGrid = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
@@ -400,282 +364,211 @@
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ];
         
-        // Player path tracing
-        let isTracing = false;
+        // Calculate positions
+        const offset = -(MAZE_SIZE * CELL_SIZE) / 2;
+        const START_POS = { x: offset + CELL_SIZE, z: offset + CELL_SIZE };
+        const END_POS = { x: offset + (MAZE_SIZE - 2) * CELL_SIZE, z: offset + (MAZE_SIZE - 2) * CELL_SIZE };
+        
+        // Three.js Setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(COLORS.FLOOR);
+        
+        // Orthographic camera for true 2D view
+        const aspect = window.innerWidth / window.innerHeight;
+        const viewSize = 22;
+        const camera = new THREE.OrthographicCamera(
+            viewSize * aspect / -2,
+            viewSize * aspect / 2,
+            viewSize / 2,
+            viewSize / -2,
+            0.1,
+            1000
+        );
+        camera.position.set(0, 10, 0);
+        camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        
+        // Post-processing for neon glow
+        const composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+        
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            1.5,    // strength
+            0.4,    // radius
+            0.85    // threshold
+        );
+        composer.addPass(bloomPass);
+        
+        // Build maze
+        const walls = [];
+        const wallMaterial = new THREE.MeshBasicMaterial({
+            color: COLORS.WALL,
+        });
+        
+        // Create walls as glowing lines (neon effect)
+        for (let z = 0; z < MAZE_SIZE; z++) {
+            for (let x = 0; x < MAZE_SIZE; x++) {
+                if (mazeGrid[z][x] === 1) {
+                    const wx = offset + x * CELL_SIZE;
+                    const wz = offset + z * CELL_SIZE;
+                    
+                    // Wall cube with glow
+                    const geometry = new THREE.BoxGeometry(CELL_SIZE * 0.95, WALL_HEIGHT, CELL_SIZE * 0.95);
+                    const wall = new THREE.Mesh(geometry, wallMaterial);
+                    wall.position.set(wx, WALL_HEIGHT / 2, wz);
+                    scene.add(wall);
+                    walls.push({x: wx, z: wz, mesh: wall});
+                    
+                    // Glowing wireframe overlay
+                    const edges = new THREE.EdgesGeometry(geometry);
+                    const lineMaterial = new THREE.LineBasicMaterial({ 
+                        color: 0xffffff,
+                        linewidth: 2
+                    });
+                    const wireframe = new THREE.LineSegments(edges, lineMaterial);
+                    wall.add(wireframe);
+                }
+            }
+        }
+        
+        // Floor grid
+        const gridHelper = new THREE.GridHelper(MAZE_SIZE * CELL_SIZE, MAZE_SIZE, 0x004444, 0x002222);
+        gridHelper.position.y = 0.01;
+        scene.add(gridHelper);
+        
+        // START marker - glowing green
+        const startGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32);
+        const startMat = new THREE.MeshBasicMaterial({ 
+            color: COLORS.START,
+        });
+        const startMarker = new THREE.Mesh(startGeo, startMat);
+        startMarker.position.set(START_POS.x, 0.05, START_POS.z);
+        scene.add(startMarker);
+        
+        // Start glow ring
+        const startRingGeo = new THREE.RingGeometry(0.5, 0.7, 32);
+        const startRingMat = new THREE.MeshBasicMaterial({ 
+            color: COLORS.START,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.8
+        });
+        const startRing = new THREE.Mesh(startRingGeo, startRingMat);
+        startRing.position.set(START_POS.x, 0.1, START_POS.z);
+        startRing.rotation.x = -Math.PI / 2;
+        scene.add(startRing);
+        
+        // END marker - glowing red/pink
+        const endGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32);
+        const endMat = new THREE.MeshBasicMaterial({ 
+            color: COLORS.END,
+        });
+        const endMarker = new THREE.Mesh(endGeo, endMat);
+        endMarker.position.set(END_POS.x, 0.05, END_POS.z);
+        scene.add(endMarker);
+        
+        // End glow ring
+        const endRingGeo = new THREE.RingGeometry(0.5, 0.7, 32);
+        const endRingMat = new THREE.MeshBasicMaterial({ 
+            color: COLORS.END,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.8
+        });
+        const endRing = new THREE.Mesh(endRingGeo, endRingMat);
+        endRing.position.set(END_POS.x, 0.1, END_POS.z);
+        endRing.rotation.x = -Math.PI / 2;
+        scene.add(endRing);
+        
+        // Player trace line
         let traceLine = null;
         let tracePoints = [];
-        let playerDot = null;
         
-        // Raycaster for touch interaction
-        const raycaster = new THREE.Raycaster();
-        const touchPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-        
-        // Load maze
-        const loader = new GLTFLoader();
-        let mazeModel = null;
-        let walls = [];
-        
-        loader.load('./maze.glb',
-            (gltf) => {
-                mazeModel = gltf.scene;
-                
-                mazeModel.traverse((child) => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                        
-                        // Collect wall meshes for collision
-                        if (child.name.includes('Wall') || child.name.includes('Pillar') || child.name.includes('Frame')) {
-                            walls.push(child);
-                            child.userData.isWall = true;
-                        }
-                    }
-                });
-                
-                scene.add(mazeModel);
-                console.log('Maze loaded with', walls.length, 'wall objects');
-            },
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            (error) => {
-                console.error('Error loading maze:', error);
-            }
-        );
-        
-        // Create player dot
-        function createPlayerDot() {
-            const geometry = new THREE.SphereGeometry(0.15, 16, 16);
-            const material = new THREE.MeshBasicMaterial({ 
-                color: 0x2ed573,
-                emissive: 0x2ed573,
-                emissiveIntensity: 0.5
-            });
-            playerDot = new THREE.Mesh(geometry, material);
-            playerDot.visible = false;
-            scene.add(playerDot);
-        }
-        
-        createPlayerDot();
-        
-        // Create bright glowing markers for start and end
-        let startMarker, endMarker;
-        
-        function createGlowingMarkers() {
-            // Start marker - bright green glowing circle
-            const startGeo = new THREE.RingGeometry(0.3, 0.5, 32);
-            const startMat = new THREE.MeshBasicMaterial({ 
-                color: 0x00ff44,
-                side: THREE.DoubleSide,
-                transparent: true,
-                opacity: 0.9
-            });
-            startMarker = new THREE.Mesh(startGeo, startMat);
-            startMarker.position.set(START_POS.x, 0.1, START_POS.z);
-            startMarker.rotation.x = -Math.PI / 2;
-            scene.add(startMarker);
-            
-            // Start label - floating above
-            const startLabelGeo = new THREE.PlaneGeometry(1.5, 0.4);
-            const startLabelCanvas = document.createElement('canvas');
-            startLabelCanvas.width = 256;
-            startLabelCanvas.height = 64;
-            const startCtx = startLabelCanvas.getContext('2d');
-            startCtx.fillStyle = '#00ff44';
-            startCtx.fillRect(0, 0, 256, 64);
-            startCtx.fillStyle = '#000000';
-            startCtx.font = 'bold 32px Arial';
-            startCtx.textAlign = 'center';
-            startCtx.fillText('START', 128, 42);
-            const startTexture = new THREE.CanvasTexture(startLabelCanvas);
-            const startLabelMat = new THREE.MeshBasicMaterial({ 
-                map: startTexture,
-                transparent: true
-            });
-            const startLabel = new THREE.Mesh(startLabelGeo, startLabelMat);
-            startLabel.position.set(START_POS.x, 0.6, START_POS.z);
-            startLabel.rotation.x = -Math.PI / 2;
-            scene.add(startLabel);
-            
-            // End marker - bright red glowing circle
-            const endGeo = new THREE.RingGeometry(0.3, 0.5, 32);
-            const endMat = new THREE.MeshBasicMaterial({ 
-                color: 0xff0044,
-                side: THREE.DoubleSide,
-                transparent: true,
-                opacity: 0.9
-            });
-            endMarker = new THREE.Mesh(endGeo, endMat);
-            endMarker.position.set(END_POS.x, 0.1, END_POS.z);
-            endMarker.rotation.x = -Math.PI / 2;
-            scene.add(endMarker);
-            
-            // End label
-            const endLabelGeo = new THREE.PlaneGeometry(1.5, 0.4);
-            const endLabelCanvas = document.createElement('canvas');
-            endLabelCanvas.width = 256;
-            endLabelCanvas.height = 64;
-            const endCtx = endLabelCanvas.getContext('2d');
-            endCtx.fillStyle = '#ff0044';
-            endCtx.fillRect(0, 0, 256, 64);
-            endCtx.fillStyle = '#000000';
-            endCtx.font = 'bold 32px Arial';
-            endCtx.textAlign = 'center';
-            endCtx.fillText('END', 128, 42);
-            const endTexture = new THREE.CanvasTexture(endLabelCanvas);
-            const endLabelMat = new THREE.MeshBasicMaterial({ 
-                map: endTexture,
-                transparent: true
-            });
-            const endLabel = new THREE.Mesh(endLabelGeo, endLabelMat);
-            endLabel.position.set(END_POS.x, 0.6, END_POS.z);
-            endLabel.rotation.x = -Math.PI / 2;
-            scene.add(endLabel);
-        }
-        
-        createGlowingMarkers();
-        
-        // Animate markers
-        function animateMarkers() {
-            if (startMarker && endMarker) {
-                const time = Date.now() * 0.003;
-                startMarker.scale.setScalar(1 + Math.sin(time) * 0.1);
-                endMarker.scale.setScalar(1 + Math.sin(time + Math.PI) * 0.1);
-            }
-            requestAnimationFrame(animateMarkers);
-        }
-        animateMarkers();
-        
-        // Create trace line
         function createTraceLine() {
             const geometry = new THREE.BufferGeometry();
             const material = new THREE.LineBasicMaterial({ 
-                color: 0x2ed573,
-                linewidth: 3,
-                opacity: 0.8,
-                transparent: true
+                color: COLORS.TRACE,
+                linewidth: 5
             });
             traceLine = new THREE.Line(geometry, material);
-            traceLine.frustumCulled = false;
             scene.add(traceLine);
         }
-        
         createTraceLine();
         
-        // Check if point is in a wall (simple grid-based check)
-        function isInWall(x, z) {
-            // Convert world coordinates to grid coordinates
-            const offset = -(MAZE_SIZE * CELL_SIZE) / 2;
-            const gridX = Math.floor((x - offset) / CELL_SIZE);
-            const gridZ = Math.floor((z - offset) / CELL_SIZE);
-            
-            // Check bounds
-            if (gridX < 0 || gridX >= MAZE_SIZE || gridZ < 0 || gridZ >= MAZE_SIZE) {
-                return true; // Out of bounds = wall
-            }
-            
-            // Check if it's a wall cell
-            if (mazeGrid[gridZ][gridX] === 1) {
-                // Check if we're close to the center (where the wall is)
-                const cellX = offset + gridX * CELL_SIZE + CELL_SIZE / 2;
-                const cellZ = offset + gridZ * CELL_SIZE + CELL_SIZE / 2;
-                const dist = Math.sqrt((x - cellX) ** 2 + (z - cellZ) ** 2);
-                return dist < WALL_RADIUS;
-            }
-            
-            return false;
-        }
+        // Player dot
+        const playerGeo = new THREE.SphereGeometry(0.15, 16, 16);
+        const playerMat = new THREE.MeshBasicMaterial({ color: COLORS.TRACE });
+        const playerDot = new THREE.Mesh(playerGeo, playerMat);
+        playerDot.visible = false;
+        scene.add(playerDot);
         
-        // Check if reached end
-        function checkReachedEnd(x, z) {
-            const dist = Math.sqrt((x - END_POS.x) ** 2 + (z - END_POS.z) ** 2);
-            return dist < END_RADIUS;
-        }
+        // Raycaster
+        const raycaster = new THREE.Raycaster();
+        const touchPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
         
-        // Check if at start
-        function checkAtStart(x, z) {
-            const dist = Math.sqrt((x - START_POS.x) ** 2 + (z - START_POS.z) ** 2);
-            return dist < 0.8;
-        }
+        // Game variables
+        let isTracing = false;
         
-        // Get touch position on ground plane
-        function getTouchPosition(clientX, clientY) {
+        // Animation - pulse rings
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.003;
+            startRing.scale.setScalar(1 + Math.sin(time) * 0.2);
+            endRing.scale.setScalar(1 + Math.sin(time + Math.PI) * 0.2);
+            
+            composer.render();
+        }
+        animate();
+        
+        // Touch handling
+        function getTouchPos(clientX, clientY) {
             const mouse = new THREE.Vector2(
                 (clientX / window.innerWidth) * 2 - 1,
                 -(clientY / window.innerHeight) * 2 + 1
             );
-            
             raycaster.setFromCamera(mouse, camera);
             const target = new THREE.Vector3();
             raycaster.ray.intersectPlane(touchPlane, target);
             return target;
         }
         
-        // Touch handlers
-        function onTouchStart(e) {
-            if (gameState !== 'playing') return;
-            e.preventDefault();
-            
-            const touch = e.touches[0] || e;
-            const pos = getTouchPosition(touch.clientX, touch.clientY);
-            
-            if (pos) {
-                // Check if starting from the start marker
-                if (checkAtStart(pos.x, pos.z)) {
-                    isTracing = true;
-                    tracePoints = [new THREE.Vector3(pos.x, 0.1, pos.z)];
-                    updateTraceLine();
-                    
-                    playerDot.position.set(pos.x, 0.1, pos.z);
-                    playerDot.visible = true;
-                }
-            }
+        function checkAtStart(x, z) {
+            const dx = x - START_POS.x;
+            const dz = z - START_POS.z;
+            return Math.sqrt(dx*dx + dz*dz) < 0.8;
         }
         
-        function onTouchMove(e) {
-            if (gameState !== 'playing' || !isTracing) return;
-            e.preventDefault();
-            
-            const touch = e.touches[0] || e;
-            const pos = getTouchPosition(touch.clientX, touch.clientY);
-            
-            if (pos) {
-                // Check wall collision
-                if (isInWall(pos.x, pos.z)) {
-                    loseGame('hit-wall');
-                    return;
-                }
-                
-                // Add point to trace
-                tracePoints.push(new THREE.Vector3(pos.x, 0.1, pos.z));
-                updateTraceLine();
-                
-                // Update player dot
-                playerDot.position.set(pos.x, 0.1, pos.z);
-                
-                // Check if reached end
-                if (checkReachedEnd(pos.x, pos.z)) {
-                    winGame();
-                }
-            }
+        function checkAtEnd(x, z) {
+            const dx = x - END_POS.x;
+            const dz = z - END_POS.z;
+            return Math.sqrt(dx*dx + dz*dz) < 0.6;
         }
         
-        function onTouchEnd(e) {
-            if (gameState !== 'playing') return;
-            e.preventDefault();
+        function isInWall(x, z) {
+            const gx = Math.floor((x - offset) / CELL_SIZE);
+            const gz = Math.floor((z - offset) / CELL_SIZE);
             
-            if (isTracing) {
-                // If they let go before reaching end, they fail
-                const lastPoint = tracePoints[tracePoints.length - 1];
-                if (!checkReachedEnd(lastPoint.x, lastPoint.z)) {
-                    loseGame('let-go');
-                }
+            if (gx < 0 || gx >= MAZE_SIZE || gz < 0 || gz >= MAZE_SIZE) return true;
+            
+            // Check collision with walls more precisely
+            for (const wall of walls) {
+                const dx = x - wall.x;
+                const dz = z - wall.z;
+                const dist = Math.sqrt(dx*dx + dz*dz);
+                if (dist < CELL_SIZE * 0.4) return true;
             }
             
-            isTracing = false;
+            return false;
         }
         
-        function updateTraceLine() {
+        function updateTrace() {
             if (tracePoints.length > 1) {
                 const geometry = new THREE.BufferGeometry().setFromPoints(tracePoints);
                 traceLine.geometry.dispose();
@@ -685,83 +578,102 @@
         
         // Event listeners
         const canvas = renderer.domElement;
-        canvas.addEventListener('touchstart', onTouchStart, { passive: false });
-        canvas.addEventListener('touchmove', onTouchMove, { passive: false });
-        canvas.addEventListener('touchend', onTouchEnd, { passive: false });
-        canvas.addEventListener('mousedown', (e) => {
-            onTouchStart({ touches: [e], preventDefault: () => {} });
-        });
-        canvas.addEventListener('mousemove', (e) => {
-            if (e.buttons > 0) {
-                onTouchMove({ touches: [e], preventDefault: () => {} });
+        
+        function onStart(e) {
+            if (gameState !== 'playing') return;
+            e.preventDefault();
+            
+            const touch = e.touches ? e.touches[0] : e;
+            const pos = getTouchPos(touch.clientX, touch.clientY);
+            
+            if (pos && checkAtStart(pos.x, pos.z)) {
+                isTracing = true;
+                tracePoints = [new THREE.Vector3(pos.x, 0.1, pos.z)];
+                updateTrace();
+                playerDot.position.set(pos.x, 0.1, pos.z);
+                playerDot.visible = true;
             }
-        });
-        canvas.addEventListener('mouseup', onTouchEnd);
+        }
+        
+        function onMove(e) {
+            if (gameState !== 'playing' || !isTracing) return;
+            e.preventDefault();
+            
+            const touch = e.touches ? e.touches[0] : e;
+            const pos = getTouchPos(touch.clientX, touch.clientY);
+            
+            if (pos) {
+                if (isInWall(pos.x, pos.z)) {
+                    loseGame('wall');
+                    return;
+                }
+                
+                tracePoints.push(new THREE.Vector3(pos.x, 0.1, pos.z));
+                updateTrace();
+                playerDot.position.set(pos.x, 0.1, pos.z);
+                
+                if (checkAtEnd(pos.x, pos.z)) {
+                    winGame();
+                }
+            }
+        }
+        
+        function onEnd(e) {
+            if (gameState !== 'playing') return;
+            e.preventDefault();
+            
+            if (isTracing) {
+                const last = tracePoints[tracePoints.length - 1];
+                if (!checkAtEnd(last.x, last.z)) {
+                    loseGame('letgo');
+                }
+            }
+            isTracing = false;
+        }
+        
+        canvas.addEventListener('touchstart', onStart, { passive: false });
+        canvas.addEventListener('touchmove', onMove, { passive: false });
+        canvas.addEventListener('touchend', onEnd, { passive: false });
+        canvas.addEventListener('mousedown', (e) => onStart({ touches: [e], preventDefault: ()=>{} }));
+        canvas.addEventListener('mousemove', (e) => { if (e.buttons) onMove({ touches: [e], preventDefault: ()=>{} }); });
+        canvas.addEventListener('mouseup', onEnd);
         
         // Game functions
         window.startGame = function() {
             gameState = 'playing';
             timeLeft = 30;
             tracePoints = [];
-            updateTraceLine();
+            updateTrace();
+            playerDot.visible = false;
+            isTracing = false;
             
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('win-screen').classList.add('hidden');
             document.getElementById('lose-screen').classList.add('hidden');
-            document.getElementById('instructions').style.opacity = '1';
             
-            // Update buttons
             document.getElementById('start-btn').style.display = 'none';
             document.getElementById('restart-btn').style.display = 'inline-block';
             
-            playerDot.visible = false;
-            
-            // Start timer
             startTimer();
         };
         
         window.startOver = function() {
-            // Stop current game
             clearInterval(gameTimer);
             gameState = 'waiting';
             timeLeft = 30;
             tracePoints = [];
-            updateTraceLine();
+            updateTrace();
             playerDot.visible = false;
             isTracing = false;
             
             updateTimerDisplay();
             
-            // Reset UI
             document.getElementById('start-screen').classList.remove('hidden');
             document.getElementById('win-screen').classList.add('hidden');
             document.getElementById('lose-screen').classList.add('hidden');
+            
             document.getElementById('start-btn').style.display = 'inline-block';
             document.getElementById('restart-btn').style.display = 'none';
-        };
-        
-        window.resetGame = function() {
-            gameState = 'waiting';
-            timeLeft = 30;
-            tracePoints = [];
-            updateTraceLine();
-            playerDot.visible = false;
-            isTracing = false;
-            
-            clearInterval(gameTimer);
-            updateTimerDisplay();
-            
-            document.getElementById('start-screen').classList.remove('hidden');
-            document.getElementById('win-screen').classList.add('hidden');
-            document.getElementById('lose-screen').classList.add('hidden');
-        };
-        
-        window.resetView = function() {
-            // Keep the 2D top-down view
-            camera.position.set(0, 10, 0);
-            camera.lookAt(0, 0, 0);
-            camera.zoom = 1;
-            camera.updateProjectionMatrix();
         };
         
         function startTimer() {
@@ -777,27 +689,18 @@
         }
         
         function updateTimerDisplay() {
-            const timerEl = document.getElementById('timer');
-            timerEl.textContent = timeLeft.toFixed(2);
-            
-            if (timeLeft <= 5) {
-                timerEl.classList.add('danger');
-            } else {
-                timerEl.classList.remove('danger');
-            }
+            const timer = document.getElementById('timer');
+            timer.textContent = timeLeft.toFixed(2);
+            timer.classList.toggle('danger', timeLeft <= 5);
         }
         
         function winGame() {
             gameState = 'won';
             clearInterval(gameTimer);
             
-            const timeUsed = (30 - timeLeft).toFixed(2);
-            document.getElementById('win-message').textContent = 
-                `You escaped in ${timeUsed} seconds!`;
+            const time = (30 - timeLeft).toFixed(2);
+            document.getElementById('win-message').textContent = `Escaped in ${time}s!`;
             document.getElementById('win-screen').classList.remove('hidden');
-            
-            // Confetti effect (simple particles)
-            createConfetti();
         }
         
         function loseGame(reason) {
@@ -805,82 +708,33 @@
             clearInterval(gameTimer);
             isTracing = false;
             
-            const loseTitle = document.getElementById('lose-title');
-            const loseMessage = document.getElementById('lose-message');
+            const title = document.getElementById('lose-title');
+            const msg = document.getElementById('lose-message');
             
-            if (reason === 'hit-wall') {
-                loseTitle.textContent = '💥 CRASH!';
-                loseMessage.textContent = 'You hit a wall! Stay on the path...';
-            } else if (reason === 'let-go') {
-                loseTitle.textContent = '🛑 STOPPED!';
-                loseMessage.textContent = 'You let go before escaping!';
+            if (reason === 'wall') {
+                title.textContent = 'WALL HIT!';
+                msg.textContent = 'Stay on the path!';
+            } else if (reason === 'letgo') {
+                title.textContent = 'STOPPED!';
+                msg.textContent = 'Keep tracing to the end!';
             } else {
-                loseTitle.textContent = '⏰ TIME\'S UP!';
-                loseMessage.textContent = 'The maze has trapped you forever...';
+                title.textContent = 'TIME OUT!';
+                msg.textContent = 'Too slow!';
             }
             
             document.getElementById('lose-screen').classList.remove('hidden');
         }
         
-        // Simple confetti
-        function createConfetti() {
-            const colors = [0xff6b6b, 0xfeca57, 0x48dbfb, 0xff9ff3, 0x54a0ff];
-            
-            for (let i = 0; i < 50; i++) {
-                const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-                const material = new THREE.MeshBasicMaterial({ 
-                    color: colors[Math.floor(Math.random() * colors.length)]
-                });
-                const confetti = new THREE.Mesh(geometry, material);
-                
-                confetti.position.set(
-                    (Math.random() - 0.5) * 10,
-                    5 + Math.random() * 5,
-                    (Math.random() - 0.5) * 10
-                );
-                
-                confetti.userData.velocity = {
-                    x: (Math.random() - 0.5) * 0.1,
-                    y: -Math.random() * 0.1 - 0.05,
-                    z: (Math.random() - 0.5) * 0.1
-                };
-                
-                scene.add(confetti);
-                
-                // Animate confetti
-                const animateConfetti = () => {
-                    confetti.position.x += confetti.userData.velocity.x;
-                    confetti.position.y += confetti.userData.velocity.y;
-                    confetti.position.z += confetti.userData.velocity.z;
-                    confetti.rotation.x += 0.1;
-                    confetti.rotation.y += 0.1;
-                    
-                    if (confetti.position.y > -5) {
-                        requestAnimationFrame(animateConfetti);
-                    } else {
-                        scene.remove(confetti);
-                    }
-                };
-                animateConfetti();
-            }
-        }
-        
-        // Animation loop
-        function animate() {
-            animationId = requestAnimationFrame(animate);
-            renderer.render(scene, camera);
-        }
-        
-        animate();
-        
-        // Window resize
+        // Resize
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const aspect = window.innerWidth / window.innerHeight;
+            camera.left = viewSize * aspect / -2;
+            camera.right = viewSize * aspect / 2;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        // Initial timer display
         updateTimerDisplay();
     </script>
 </body>
