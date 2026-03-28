@@ -373,9 +373,9 @@
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(COLORS.FLOOR);
         
-        // Orthographic camera for true 2D view
+        // Orthographic camera for true 2D view - ZOOMED OUT MORE
         const aspect = window.innerWidth / window.innerHeight;
-        const viewSize = 22;
+        const viewSize = 32;  // Increased from 22 to zoom out more
         const camera = new THREE.OrthographicCamera(
             viewSize * aspect / -2,
             viewSize * aspect / 2,
@@ -728,8 +728,8 @@
         // Resize
         window.addEventListener('resize', () => {
             const aspect = window.innerWidth / window.innerHeight;
-            camera.left = viewSize * aspect / -2;
-            camera.right = viewSize * aspect / 2;
+            camera.left = 32 * aspect / -2;  // Updated to match new viewSize
+            camera.right = 32 * aspect / 2;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             composer.setSize(window.innerWidth, window.innerHeight);
