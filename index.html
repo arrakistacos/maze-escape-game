@@ -269,7 +269,8 @@
     </div>
     
     <div class="ui-layer controls">
-        <button onclick="startGame()">🎮 START GAME</button>
+        <button id="start-btn" onclick="startGame()">🎮 START GAME</button>
+        <button id="restart-btn" onclick="startOver()" style="display: none;">🔄 START OVER</button>
         <button onclick="resetView()">📷 Reset View</button>
     </div>
     
@@ -291,6 +292,7 @@
             </div>
             
             <button class="primary" onclick="startGame()">🚀 START ESCAPE</button>
+            <button onclick="startOver()" style="margin-top: 10px; background: transparent; border: 2px solid rgba(255,255,255,0.3);">🔄 START OVER</button>
         </div>
     </div>
     
@@ -299,7 +301,7 @@
         <div class="modal-content">
             <h2 class="win">🎉 ESCAPED!</h2>
             <p id="win-message">You made it out in time!</p>
-            <button class="primary" onclick="resetGame()">🔄 PLAY AGAIN</button>
+            <button class="primary" onclick="startOver()">🔄 PLAY AGAIN</button>
         </div>
     </div>
     
@@ -308,7 +310,7 @@
         <div class="modal-content">
             <h2 class="lose" id="lose-title">⏰ TIME'S UP!</h2>
             <p id="lose-message">The maze has trapped you forever...</p>
-            <button class="primary" onclick="resetGame()">🔄 TRY AGAIN</button>
+            <button class="primary" onclick="startOver()">🔄 TRY AGAIN</button>
         </div>
     </div>
     
@@ -324,11 +326,21 @@
         
         // Three.js Setup
         const scene = new THREE.Scene();
-        scene.fog = new THREE.Fog(0x1a1a2e, 10, 50);
         
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 15, 12);
+        // Orthographic camera for 2D top-down view
+        const aspect = window.innerWidth / window.innerHeight;
+        const frustumSize = 20;
+        const camera = new THREE.OrthographicCamera(
+            frustumSize * aspect / -2,
+            frustumSize * aspect / 2,
+            frustumSize / 2,
+            frustumSize / -2,
+            0.1,
+            1000
+        );
+        camera.position.set(0, 10, 0);
         camera.lookAt(0, 0, 0);
+        camera.rotation.z = 0; // Keep upright
         
         const renderer = new THREE.WebGLRenderer({ 
             antialias: true, 
@@ -337,25 +349,16 @@
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.shadowMap.enabled = false; // Disable shadows for cleaner 2D look
         document.getElementById('canvas-container').appendChild(renderer.domElement);
         
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0x404060, 0.5);
+        // Dimmed Lighting for 2D view
+        const ambientLight = new THREE.AmbientLight(0x303050, 0.6);
         scene.add(ambientLight);
         
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(10, 20, 10);
-        dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
+        const dirLight = new THREE.DirectionalLight(0x505070, 0.4);
+        dirLight.position.set(0, 10, 5);
         scene.add(dirLight);
-        
-        // Point lights for atmosphere
-        const blueLight = new THREE.PointLight(0x3742fa, 1, 30);
-        blueLight.position.set(0, 5, 0);
-        scene.add(blueLight);
         
         // Maze boundaries (for collision detection)
         const MAZE_SIZE = 15;
@@ -607,10 +610,34 @@
             document.getElementById('lose-screen').classList.add('hidden');
             document.getElementById('instructions').style.opacity = '1';
             
+            // Update buttons
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('restart-btn').style.display = 'inline-block';
+            
             playerDot.visible = false;
             
             // Start timer
             startTimer();
+        };
+        
+        window.startOver = function() {
+            // Stop current game
+            clearInterval(gameTimer);
+            gameState = 'waiting';
+            timeLeft = 30;
+            tracePoints = [];
+            updateTraceLine();
+            playerDot.visible = false;
+            isTracing = false;
+            
+            updateTimerDisplay();
+            
+            // Reset UI
+            document.getElementById('start-screen').classList.remove('hidden');
+            document.getElementById('win-screen').classList.add('hidden');
+            document.getElementById('lose-screen').classList.add('hidden');
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('restart-btn').style.display = 'none';
         };
         
         window.resetGame = function() {
@@ -630,8 +657,11 @@
         };
         
         window.resetView = function() {
-            camera.position.set(0, 15, 12);
+            // Keep the 2D top-down view
+            camera.position.set(0, 10, 0);
             camera.lookAt(0, 0, 0);
+            camera.zoom = 1;
+            camera.updateProjectionMatrix();
         };
         
         function startTimer() {
@@ -738,15 +768,6 @@
         // Animation loop
         function animate() {
             animationId = requestAnimationFrame(animate);
-            
-            // Rotate camera slowly
-            if (gameState === 'waiting') {
-                const time = Date.now() * 0.0002;
-                camera.position.x = Math.sin(time) * 15;
-                camera.position.z = Math.cos(time) * 15;
-                camera.lookAt(0, 0, 0);
-            }
-            
             renderer.render(scene, camera);
         }
         
